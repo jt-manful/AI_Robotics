@@ -14,11 +14,6 @@ def driveStraight():
 def turnLeft(angle, speed):
     pass
 
-def turnRight():
-    pass
-
-
-
 
 # Function takes an angle, a motor speed and a direction and causes the 
 # bot to spin either left or right.
