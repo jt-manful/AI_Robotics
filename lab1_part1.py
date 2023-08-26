@@ -5,8 +5,6 @@ from ev3dev2.motor import LargeMotor, MoveTank, OUTPUT_C, OUTPUT_B
 import math
 
 # initailize motors 
-left_motor = LargeMotor(OUTPUT_C)
-right_motor = LargeMotor(OUTPUT_B)
 tank = MoveTank(left_motor_port=OUTPUT_C, right_motor_port=OUTPUT_B)
 
 # Distance is in centimeters
@@ -30,13 +28,13 @@ def turnLeft(angle, speed):
 # bot to spin either left or right.'
 def spin(angle_deg, motor_speed, direction):
  
-    # calculate actual turning angle (confirm calculations with joel)
-    baseline = 12.1 
-    distance_travelled = (2 * math.pi * baseline) / 360
-    actual_rotational_degrees = 0
+    # calculate actual turning angle 
+    half_baseline = 8.0
+    wheel_circumfrence = 19.5
+    multiplier = 2 * math.pi * half_baseline / wheel_circumfrence
+    actual_rotational_degrees = angle_deg * multiplier
 
-
-    if not (0 >= motor_speed and motor_speed <= 1000):
+    if not (0 <=  motor_speed and motor_speed <= 1000):
         return -1
     
     if direction == 'right':
