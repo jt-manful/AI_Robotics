@@ -20,8 +20,18 @@ def driveStraight(distance, speed):
     
     tank.on_for_rotations(motor_speed, motor_speed, rotation)
 
-def turnLeft(angle, speed):
-    pass
+def turn(angle, speed, direction):
+    baseline = 16
+    wheel_circumference = 19.5 
+    multiplier = (2*math.pi*baseline)/(wheel_circumference)
+    
+    if not (0 <= speed and speed <= 1000):
+        return -1
+        
+    if direction == 'left':
+        tank.on_for_degrees(left_speed=0, right_speed=speed, degrees=angle*multiplier)
+    elif direction == 'right':
+        tank.on_for_degrees(left_speed=speed, right_speed=0, degrees=angle*multiplier)
 
 
 # Function takes an angle, a motor speed and a direction and causes the 
