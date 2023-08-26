@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 # Left motor is output_c, and right_motor is output_b
-from ev3dev2.motor import LargeMotor, MoveTank, OUTPUT_C, OUTPUT_B
+from ev3dev2.motor import MoveTank, OUTPUT_C, OUTPUT_B
 import math
 
 # initailize motors 
-tank = MoveTank(left_motor_port=OUTPUT_C, right_motor_port=OUTPUT_B)
+tank = MoveTank(OUTPUT_C, OUTPUT_B)
 
 # Distance is in centimeters
 # Motor speed is between -1000 and 1000
