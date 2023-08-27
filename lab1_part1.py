@@ -18,6 +18,9 @@ def driveStraight(distance, speed):
     # Motor Speed
     motor_speed = speed
     
+    if not ( -1000<= speed and speed <= 1000):
+        return -1
+    
     tank.on_for_rotations(-motor_speed, -motor_speed, rotation)
 
 def turn(angle, speed, direction):
