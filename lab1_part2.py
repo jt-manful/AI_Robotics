@@ -21,8 +21,8 @@ while array_count < len(directions_array):
          break
     if 'forward' in directions_array[array_count]:
         direction = directions_array[array_count].split(' ')[0]
-        distance = directions_array[array_count].split(' ')[1]
-        actual_distance = 52.5 * distance
+        distance = int(directions_array[array_count].split(' ')[1])
+        actual_distance = 44.0 * distance
         driveStraight(distance=actual_distance, speed=MOTOR_SPEED)
 
     if 'left' in directions_array[array_count]:
