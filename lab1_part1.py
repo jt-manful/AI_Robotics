@@ -16,12 +16,12 @@ def driveStraight(distance, speed):
     rotations_per_cent = 1/wheel_circumference
     rotation = distance * rotations_per_cent
     # Motor Speed
-    motor_speed = (speed/1000) * 100
+    motor_speed = speed
     
-    tank.on_for_rotations(motor_speed, motor_speed, rotation)
+    tank.on_for_rotations(-motor_speed, -motor_speed, rotation)
 
 def turn(angle, speed, direction):
-    baseline = 16
+    baseline = 15.15
     wheel_circumference = 19.5 
     multiplier = (2*math.pi*baseline)/(wheel_circumference)
     
@@ -29,9 +29,9 @@ def turn(angle, speed, direction):
         return -1
         
     if direction == 'left':
-        tank.on_for_degrees(left_speed=0, right_speed=speed, degrees=angle*multiplier)
+        tank.on_for_degrees(left_speed=0, right_speed=-speed, degrees=angle*multiplier)
     elif direction == 'right':
-        tank.on_for_degrees(left_speed=speed, right_speed=0, degrees=angle*multiplier)
+        tank.on_for_degrees(left_speed=-speed, right_speed=0, degrees=angle*multiplier)
 
 
 # Function takes an angle, a motor speed and a direction and causes the 
@@ -53,3 +53,16 @@ def spin(angle_deg, motor_speed, direction):
         tank.on_for_degrees(left_speed=motor_speed, right_speed=-motor_speed, degrees=actual_rotational_degrees)
     else:
          return -1
+
+
+if __name__ == "__main__":
+    # closed shape kite
+    driveStraight()
+    turn()
+    driveStraight()
+    turn()
+    driveStraight()
+    turn()
+    driveStraight()
+    turn()
+    spin()

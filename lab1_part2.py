@@ -1,10 +1,12 @@
+#!/usr/bin/env python3
 from lab1_part1 import driveStraight, turn, spin
 
 #global vars
 TURN_ANGLE = 90
-MOTOR_SPEED = 50
+MOTOR_SPEED = 70
 LEFT = 'left'
 RIGHT = 'right'
+TILE_DISTANCE = 44.0
 
 # open file 
 file = open("navigation.txt", 'r')
@@ -22,7 +24,7 @@ while array_count < len(directions_array):
     if 'forward' in directions_array[array_count]:
         direction = directions_array[array_count].split(' ')[0]
         distance = int(directions_array[array_count].split(' ')[1])
-        actual_distance = 44.0 * distance
+        actual_distance = TILE_DISTANCE * distance
         driveStraight(distance=actual_distance, speed=MOTOR_SPEED)
 
     if 'left' in directions_array[array_count]:
