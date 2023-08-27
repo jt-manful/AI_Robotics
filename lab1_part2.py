@@ -3,7 +3,7 @@ from lab1_part1 import driveStraight, turn, spin
 
 #global vars
 TURN_ANGLE = 90
-MOTOR_SPEED = 70
+MOTOR_SPEED = 700
 LEFT = 'left'
 RIGHT = 'right'
 TILE_DISTANCE = 44.0
