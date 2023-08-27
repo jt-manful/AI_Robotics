@@ -2,7 +2,7 @@
 
 from lab1_part1 import driveStraight, turn, spin
 
-turn(90, 50, 'left')
+spin(360, 100, 'left')
 
 
 
