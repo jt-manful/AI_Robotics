@@ -7,7 +7,7 @@ tank = MoveTank(OUTPUT_C, OUTPUT_B)
 
 # global vars
 WHEEL_CIRCUMFRENCE = 19.5
-BASELINE = 15.15
+BASELINE = 15.15 #.17
 
 
 # Distance is in centimeters
@@ -43,7 +43,7 @@ def turn(angle, speed, direction):
 def spin(angle_deg, motor_speed, direction):
  
     # calculate actual turning angle 
-    half_baseline = BASELINE / 1.8
+    half_baseline = BASELINE /2
     multiplier = 2 * math.pi * half_baseline / WHEEL_CIRCUMFRENCE
     actual_rotational_degrees = angle_deg * multiplier
 
@@ -61,12 +61,23 @@ def spin(angle_deg, motor_speed, direction):
 
 
 if __name__ == "__main__":
+    # closed shape square
+    # driveStraight(63, 500)
+    # turn(90,500,'right')
+    # driveStraight(63, 500)
+    # turn(90,500,'right')
+    # driveStraight(63, 500)
+    # turn(90,500,'right')
+    # driveStraight(63, 500)
+    # turn(90,500,'right')
+    
     # closed shape kite
     spin(40, 500, 'left')
     driveStraight(62, 500)
-    spin(77,500,'right')
+    turn(77,500,'right')
     driveStraight(50, 500)
-    spin(106, 500,"right")
+    turn(106, 500,"right")
     driveStraight(50, 500)
-    spin(77,500,'right')
+    turn(77,500,'right')
     driveStraight(62, 500)
+    turn(140,500, 'right')
