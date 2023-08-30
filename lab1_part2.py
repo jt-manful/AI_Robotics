@@ -3,10 +3,10 @@ from lab1_part1 import driveStraight, turn, spin
 
 #global vars
 TURN_ANGLE = 90
-MOTOR_SPEED = 700
+MOTOR_SPEED = 300
 LEFT = 'left'
 RIGHT = 'right'
-TILE_DISTANCE = 44.0
+TILE_DISTANCE = 46.0 # in centimeters
 
 # open file 
 file = open("navigation.txt", 'r')
@@ -21,6 +21,7 @@ while array_count < len(directions_array):
     
     if directions_array[array_count] == 'stop':
          break
+    
     if 'forward' in directions_array[array_count]:
         direction = directions_array[array_count].split(' ')[0]
         distance = int(directions_array[array_count].split(' ')[1])
