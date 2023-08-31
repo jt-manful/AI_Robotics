@@ -2,17 +2,24 @@
 
 # imports
 from ev3dev2.motor import MoveTank, OUTPUT_C, OUTPUT_B
+from ev3dev2.sensor.lego import ColorSensor
+import time
 import math
 
-# initailize motors
+# initailize parts
 tank = MoveTank(OUTPUT_B, OUTPUT_C)
-
+color_sensor = ColorSensor()
 # global vars
 WHEEL_CIRCUMFRENCE = 19.5
 BASELINE = 14.6 
+SPIN_ANG = 90
+MOTOR_SPEED = 300
+LEFT = 'left'
+RIGHT = 'right'
+TILE_DISTANCE = 46.0 
 
 
-# Distance is in centimeters
+ #Distance is in centimeters
 # Motor speed is between -1000 and 1000
 def driveStraight(speed, distance):
     '''function takes in two params, distance and speed and causes the bot to drive
@@ -27,23 +34,7 @@ def driveStraight(speed, distance):
         return -1
     
     tank.on_for_rotations(motor_speed, motor_speed, rotation)
-
-def turn(angle, speed, direction):
-    '''function takes an angle, a motor speed and a direction and 
-        causes the bot to spin either left or right a given angle for a given speed.'''
-   
-    multiplier = (2*math.pi*BASELINE)/(WHEEL_CIRCUMFRENCE)
-    motor_speed = (speed/1000)*100
     
-    if not (0 <= motor_speed and motor_speed <= 1000):
-        return -1
-        
-    if direction == 'left':
-        tank.on_for_degrees(left_speed=0, right_speed=motor_speed, degrees=angle*multiplier)
-    elif direction == 'right':
-        tank.on_for_degrees(left_speed=motor_speed, right_speed=0, degrees=angle*multiplier)
-
-
 
 def spin(angle_deg, motor_speed, direction):
     '''function takes an angle, a motor speed and a direction and 
@@ -67,14 +58,19 @@ def spin(angle_deg, motor_speed, direction):
          return -1
 
 
+def color_guided_navigation():
+    '''function: robot moves forward and turns based on color'''
+    while not color_sensor.color == ColorSensor.COLOR_RED:
+        if color_sensor.color == ColorSensor.COLOR_GREEN:
+            spin(SPIN_ANG,MOTOR_SPEED,RIGHT)
+            driveStraight(MOTOR_SPEED, TILE_DISTANCE)
+        elif color_sensor.color == ColorSensor.COLOR_BLUE:
+            spin(SPIN_ANG,MOTOR_SPEED,LEFT)
+            driveStraight(MOTOR_SPEED, TILE_DISTANCE)
+        else:
+            driveStraight(MOTOR_SPEED, TILE_DISTANCE)
+
+
+
 if __name__ == "__main__":
-    # closed shape kite
-    spin(40, 500, 'left')
-    driveStraight(62, 300)
-    turn(77,500,'right')
-    driveStraight(50, 300)
-    turn(106, 500,"right")
-    driveStraight(50, 300)
-    turn(77,500,'right')
-    driveStraight(62, 300)
-    spin(160,500, 'right')
+    color_guided_navigation()
