@@ -32,7 +32,7 @@ DISTANCE = 150 # METERS
 
 if __name__ == "__main__":
 
-    driveStraight(100, 50)
+    # driveStraight(100, 50)
     # driveStraight(200, 150)
     # time.sleep(15)
     # driveStraight(300, 150)
@@ -47,6 +47,6 @@ if __name__ == "__main__":
     # time.sleep(15)
     # driveStraight(800, 150)
     # time.sleep(15)
-    # driveStraight(900, 150)
-    # time.sleep(15)
+    driveStraight(900, 150)
+    
    
