@@ -16,7 +16,7 @@ SPIN_ANG = 90
 MOTOR_SPEED = 300
 LEFT = 'left'
 RIGHT = 'right'
-TILE_DISTANCE = 46.0 
+TILE_DISTANCE = 50.50 
 
 
  #Distance is in centimeters
@@ -60,12 +60,12 @@ def spin(angle_deg, motor_speed, direction):
 
 def color_guided_navigation():
     '''function: robot moves forward and turns based on color'''
-    while not color_sensor.color == ColorSensor.COLOR_RED:
+    while not color_sensor.color == ColorSensor.COLOR_BLACK:
         if color_sensor.color == ColorSensor.COLOR_GREEN:
-            spin(SPIN_ANG,MOTOR_SPEED,RIGHT)
+            spin(SPIN_ANG,MOTOR_SPEED/2,RIGHT)
             driveStraight(MOTOR_SPEED, TILE_DISTANCE)
-        elif color_sensor.color == ColorSensor.COLOR_BLUE:
-            spin(SPIN_ANG,MOTOR_SPEED,LEFT)
+        elif color_sensor.color == ColorSensor.COLOR_RED:
+            spin(SPIN_ANG,MOTOR_SPEED/2,LEFT)
             driveStraight(MOTOR_SPEED, TILE_DISTANCE)
         else:
             driveStraight(MOTOR_SPEED, TILE_DISTANCE)
@@ -73,4 +73,7 @@ def color_guided_navigation():
 
 
 if __name__ == "__main__":
+    #spin(90,300,RIGHT)
     color_guided_navigation()
+    # while True:
+    #     print(color_sensor.color_name)
