@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# imports
+from ev3dev2.motor import MoveTank, OUTPUT_C, OUTPUT_B
+import time
+import math
+
+
+# initailize motors
+tank = MoveTank(OUTPUT_B, OUTPUT_C)
+
+# global vars
+WHEEL_CIRCUMFRENCE = 19.5
+BASELINE = 14.6 
+
+
+
 # Names of cardinal directions corresponding to the integers 0, 1, 2, and 3
 directions = ['east','south','west','north']
 
@@ -40,12 +56,53 @@ def followPath(startPosition, startOrientation, path):
         print()
               
         # TO DO: IF NECESSARY, TURN TO FACE IN THE CORRECT DIRECTION
+        
+            
         # TO DO: MOVE ONE CELL FORWARD INTO THE NEXT POSITION
-
+        
         # Update the current position and orientation
         curPos = nextPos
         curDir = relDir
 
+
+
+# Distance is in centimeters
+# Motor speed is between -1000 and 1000
+def driveStraight(speed, distance):
+    '''function takes in two params, distance and speed and causes the bot to drive
+      either forward or backward in in straight line for a given distance at a certain speed'''
+    # Distance
+    rotations_per_cent = 1/WHEEL_CIRCUMFRENCE
+    rotation = distance * rotations_per_cent
+    # Motor Speed
+    motor_speed = (speed/1000)*100
+    
+    if not ( -1000<= speed and speed <= 1000):
+        return -1
+    
+    tank.on_for_rotations(motor_speed, motor_speed, rotation)
+    
+    
+def spin(angle_deg, motor_speed, direction):
+    '''function takes an angle, a motor speed and a direction and 
+        causes the bot to spin either left or right a given angle for a given speed.'''
+ 
+    # calculate actual turning angle 
+    half_baseline = BASELINE /2
+    multiplier = 2 * math.pi * half_baseline / WHEEL_CIRCUMFRENCE
+    actual_rotational_degrees = angle_deg * multiplier
+
+    motor_speed = (motor_speed/1000)*100
+
+    if not (0 <=  motor_speed and motor_speed <= 1000):
+        return -1
+    
+    if direction == 'right':
+        tank.on_for_degrees(left_speed=motor_speed, right_speed=-motor_speed, degrees=actual_rotational_degrees)
+    elif direction == 'left':
+        tank.on_for_degrees(left_speed=-motor_speed, right_speed=motor_speed, degrees=actual_rotational_degrees)
+    else:
+         return -1
 
 # Test the code
 if __name__ == "__main__":
