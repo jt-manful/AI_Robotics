@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+
+# !/usr/bin/env python3
 # imports
 from ev3dev2.motor import MoveTank, OUTPUT_C, OUTPUT_B
 import time
@@ -11,7 +12,11 @@ tank = MoveTank(OUTPUT_B, OUTPUT_C)
 # global vars
 WHEEL_CIRCUMFRENCE = 19.5
 BASELINE = 14.6 
-
+SPIN_ANG = 90
+MOTOR_SPEED = 300
+LEFT = 'left'
+RIGHT = 'right'
+TILE_DISTANCE = 50.50 
 
 
 # Names of cardinal directions corresponding to the integers 0, 1, 2, and 3
@@ -56,9 +61,15 @@ def followPath(startPosition, startOrientation, path):
         print()
               
         # TO DO: IF NECESSARY, TURN TO FACE IN THE CORRECT DIRECTION
-        
-            
+        resultant_direction = curDir - relDir
+
+        if resultant_direction == -3 or resultant_direction == 1:
+            spin(SPIN_ANG, MOTOR_SPEED, RIGHT)
+        if resultant_direction == -1 or resultant_direction == 3:
+            spin(SPIN_ANG, MOTOR_SPEED, LEFT)
+    
         # TO DO: MOVE ONE CELL FORWARD INTO THE NEXT POSITION
+        driveStraight(MOTOR_SPEED, TILE_DISTANCE)
         
         # Update the current position and orientation
         curPos = nextPos
