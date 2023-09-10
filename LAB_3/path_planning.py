@@ -26,7 +26,8 @@ def neighboring_cells(curPos, world_map):
       and return a list of tuples representing the neighboring cells. '''
    
     neighboring_cells = []
-    map_y, map_x = len(world_map), len(world_map[0])
+    map_y = len(world_map[0])
+    map_x = len(world_map)
     curPos_x, curPos_y = curPos
 
     for x in range(-1, 2):
@@ -34,7 +35,7 @@ def neighboring_cells(curPos, world_map):
             if x == 0 and y == 0:
                 continue  
             new_x, new_y = curPos_x + x, curPos_y + y
-            if 0 <= new_x < map_x and 0 <= new_y < map_y and world_map[new_y][new_x] != 1:
+            if 0 <= new_x < map_x and 0 <= new_y < map_y and world_map[new_x][new_y] != 1:
                 neighboring_cells.append((new_x, new_y))
 
     return neighboring_cells
@@ -63,8 +64,6 @@ def next_move(wavefront_map, startLoc):
         startLoc = next_cell
     
     return path
-    
-    
 if __name__ == "__main__":
     print(neighboring_cells(start, world_map))
     # next_move(world_map2, start)
