@@ -63,10 +63,13 @@ def followPath(startPosition, startOrientation, path):
         # TO DO: IF NECESSARY, TURN TO FACE IN THE CORRECT DIRECTION
         resultant_direction = curDir - relDir
 
-        if resultant_direction == -3 or resultant_direction == 1:
+        if resultant_direction == -3 or resultant_direction == 1: # This might be switched
             spin(SPIN_ANG, MOTOR_SPEED, RIGHT)
-        if resultant_direction == -1 or resultant_direction == 3:
+        if resultant_direction == -1 or resultant_direction == 3: # This might be switched
             spin(SPIN_ANG, MOTOR_SPEED, LEFT)
+        if resultant_direction == 2 or resultant_direction == -2:
+            spin(SPIN_ANG, MOTOR_SPEED, RIGHT)
+            spin(SPIN_ANG, MOTOR_SPEED, RIGHT)
     
         # TO DO: MOVE ONE CELL FORWARD INTO THE NEXT POSITION
         driveStraight(MOTOR_SPEED, TILE_DISTANCE)
