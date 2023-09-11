@@ -19,8 +19,8 @@ RIGHT = 'right'
 TILE_DISTANCE = 50.50 
 
 
-# Names of cardinal directions corresponding to the integers 0, 1, 2, and 3
-directions = ['east','south','west','north']
+# Names of cardinal directions corresponding to the integers 0, 1, 2, 3, 4, 5, 6, 7
+directions = ['east','south-east','south','south-west','west','noth-west','north','north-east']
 
 # Computes the direction of pos2 relative to pos1, if pos2 is adjacent to pos1
 # pos1 and pos2 are assumed to be tuples in the form (x,y)
@@ -32,12 +32,20 @@ def relDirection(pos1, pos2):
     (x2, y2) = pos2
     if x2==x1 and y2==y1+1:
         dir = 0
-    elif x2==x1+1 and y2==y1:
+    elif x2==x1+1 and y2==y1+1:
         dir = 1
-    elif x2==x1 and y2==y1-1:
+    elif x2==x1+1 and y2==y1:
         dir = 2
-    elif x2==x1-1 and y2==y1:
+    elif x2==x1+1 and y2==y1-1:
         dir = 3
+    elif x2==x1 and y2==y1-1:
+        dir = 4
+    elif x2==x1-1 and y2==y1-1:
+        dir = 5
+    elif x2==x1-1 and y2==y1:
+        dir = 6
+    elif x2==x1-1 and y2==y1+1:
+        dir = 7
     else:
         raise ValueError(str(pos1)+" and " + str(pos2) + " are not neighbors,"\
                          +"so cannot compute relative direction between them.")
@@ -63,11 +71,15 @@ def followPath(startPosition, startOrientation, path):
         # TO DO: IF NECESSARY, TURN TO FACE IN THE CORRECT DIRECTION
         resultant_direction = curDir - relDir
 
-        if resultant_direction == -3 or resultant_direction == 1:
+        if resultant_direction == 1 or resultant_direction == -7:
+            spin(45, MOTOR_SPEED, LEFT)
+        if resultant_direction == -1 or resultant_direction == 7:
+            spin(45, MOTOR_SPEED, RIGHT)
+        if resultant_direction == 2 or resultant_direction == -6:
             spin(SPIN_ANG, MOTOR_SPEED, LEFT)
-        if resultant_direction == -1 or resultant_direction == 3:
+        if resultant_direction == 6 or resultant_direction == -2:
             spin(SPIN_ANG, MOTOR_SPEED, RIGHT)
-        if resultant_direction == 2 or resultant_direction == -2:
+        if resultant_direction == 4 or resultant_direction == -4:
             spin(180, MOTOR_SPEED, RIGHT)
     
         # TO DO: MOVE ONE CELL FORWARD INTO THE NEXT POSITION
