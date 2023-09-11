@@ -5,6 +5,11 @@ world_map = [[0, 0, 0, 0, 0],
              [0, 0, 1, 0, 0], 
              [0, 1, 0, 0, 0]]
 
+world_map1 = [[0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0], 
+             [0, 0, 0, 0, 0]]
+
 world_map2 = [[9, 8, 7, 6, 5],
              [10, 9, 1, 1, 4],
              [11, 10, 1, 4, 3], 
@@ -41,6 +46,8 @@ def neighboring_cells(curPos, world_map):
     return neighboring_cells
 
 
+
+
 def next_move(wavefront_map, startLoc):
     ''' given a completed wavefront plan will repeatedly determine the next cell to traverse to,
         by examining its neighboring cells to see which has the lower non-obstacle value.
@@ -67,6 +74,52 @@ def next_move(wavefront_map, startLoc):
         startLoc = next_cell
     
     return path
+
+
+def print_map(map):
+    for i in range(len(map)):
+        for j in range(len(map[0])):
+            # Check if the current coordinates are within the bounds of the array
+            if i < len(map) and j < len(map[0]):
+                print(map[i][j], end=" ")
+            else:
+                # If not, print an empty space
+                print(" ", end=" ")
+        print() 
+
+
+
+def wavefront_algorithm(world_map, goalLoc):
+    map_x = len(world_map)
+    map_y = len(world_map[0])
+    x_goal, y_goal = goalLoc
+
+
+    world_map[x_goal][y_goal] = 2
+    frontier = []
+    explored_set =set()
+    frontier.append((x_goal, y_goal)) 
+    
+
+    while frontier:
+        current_cell = frontier.pop(0)
+        explored_set.add((x_goal,  y_goal))
+        x_cur = current_cell[0]
+        y_cur = current_cell[1]
+        print("on the frontier: ",current_cell)
+        # neighbours can use the neighbouring cells function.
+        neighbors = neighboring_cells(current_cell, world_map) # check all cells
+        print("its neighbours: ", neighbors)
+        for neighbour in neighbors:
+            if neighbour not in explored_set:
+                world_map[neighbour[0]][neighbour[1]] = world_map[x_cur][y_cur] + 1
+                
+                frontier.append ((neighbour[0],  neighbour[1]))
+                explored_set.add((neighbour[0],  neighbour[1]))
+        print_map(world_map)
+
+    return world_map
+
 if __name__ == "__main__":
-    # print(neighboring_cells(start, world_map2))
-    print(next_move(world_map2, start))
+    # print(neighboring_cells((1,3), world_map1))
+    print(wavefront_algorithm(world_map, (1,3)))
