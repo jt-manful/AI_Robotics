@@ -9,7 +9,6 @@ import math
 # initailize motors
 tank = MoveTank(OUTPUT_B, OUTPUT_C)
 
-
 # global vars
 WHEEL_CIRCUMFRENCE = 19.5
 BASELINE = 14.6 
@@ -18,15 +17,11 @@ MOTOR_SPEED = 200
 LEFT = 'left'
 RIGHT = 'right'
 TILE_DISTANCE = 50.50
-DIAGONAL_DISTANCE = 71.5
+START_OREINTATION = 0
 
 
-
-start_oreintation = 0
-
-
-# Names of cardinal directions corresponding to the integers 0, 1, 2, 3, 4, 5, 6, 7
-directions = ['east','south-east','south','south-west','west','noth-west','north','north-east']
+# Names of cardinal directions corresponding to the integers 0, 1, 2, and 3
+directions = ['east','south','west','north']
 
 # Computes the direction of pos2 relative to pos1, if pos2 is adjacent to pos1
 # pos1 and pos2 are assumed to be tuples in the form (x,y)
@@ -38,20 +33,12 @@ def relDirection(pos1, pos2):
     (x2, y2) = pos2
     if x2==x1 and y2==y1+1:
         dir = 0
-    elif x2==x1+1 and y2==y1+1:
-        dir = 1
     elif x2==x1+1 and y2==y1:
-        dir = 2
-    elif x2==x1+1 and y2==y1-1:
-        dir = 3
+        dir = 1
     elif x2==x1 and y2==y1-1:
-        dir = 4
-    elif x2==x1-1 and y2==y1-1:
-        dir = 5
+        dir = 2
     elif x2==x1-1 and y2==y1:
-        dir = 6
-    elif x2==x1-1 and y2==y1+1:
-        dir = 7
+        dir = 3
     else:
         raise ValueError(str(pos1)+" and " + str(pos2) + " are not neighbors,"\
                          +"so cannot compute relative direction between them.")
@@ -76,32 +63,20 @@ def followPath(startPosition, startOrientation, path):
               
         # TO DO: IF NECESSARY, TURN TO FACE IN THE CORRECT DIRECTION
         resultant_direction = curDir - relDir
-
-        if resultant_direction == 1 or resultant_direction == -7:
-            spin(45, MOTOR_SPEED, LEFT)
-        if resultant_direction == -1 or resultant_direction == 7:
-            spin(45, MOTOR_SPEED, RIGHT)
-        if resultant_direction == 2 or resultant_direction == -6:
+        if resultant_direction == 1 or resultant_direction == -3:
             spin(SPIN_ANG, MOTOR_SPEED, LEFT)
-        if resultant_direction == 6 or resultant_direction == -2:
+        if resultant_direction == -1 or resultant_direction == 3:
             spin(SPIN_ANG, MOTOR_SPEED, RIGHT)
-        if resultant_direction == 4 or resultant_direction == -4:
+        if resultant_direction == 2 or resultant_direction == -2:
             spin(180, MOTOR_SPEED, RIGHT)
-    
-         
+
+        # TO DO: MOVE ONE CELL FORWARD INTO THE NEXT POSITION
+        driveStraight(MOTOR_SPEED, TILE_DISTANCE)
+
         # Update the current position and orientation
         curPos = nextPos
         curDir = relDir
 
-        # TO DO: MOVE ONE CELL FORWARD INTO THE NEXT POSITION
-        if curDir %2 == 1:
-            print("diagonal")
-            driveStraight(MOTOR_SPEED, DIAGONAL_DISTANCE)
-        else:
-            print("straight")
-            driveStraight(MOTOR_SPEED, TILE_DISTANCE)
-    
-       
 
 
 # Distance is in centimeters
@@ -141,16 +116,11 @@ def spin(angle_deg, motor_speed, direction):
         tank.on_for_degrees(left_speed=-motor_speed, right_speed=motor_speed, degrees=actual_rotational_degrees)
     else:
          return -1
-
-
-
-
+# Test the code
 if __name__ == "__main__":
-    # print(neighboring_cells((1,3), world_map1))
     world_map = wavefront_algorithm(world_map, goal)
     print_map(world_map)
     best_path = best_path(world_map, start)
     print("best path: ", best_path)
     followPath(start, start_oreintation, best_path)
-    # driveStraight(100, TILE_DISTANCE)
-    # driveStraight(100,DIAGONAL_DISTANCE)
+        
