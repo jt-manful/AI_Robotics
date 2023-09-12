@@ -3,6 +3,7 @@
 # imports
 from planning_map_extra import *
 from ev3dev2.motor import MoveTank, OUTPUT_C, OUTPUT_B
+from ev3dev2.sound import Sound
 import time
 import math
 
@@ -73,21 +74,34 @@ def followPath(startPosition, startOrientation, path):
               + ", whose direction relative to the current pos is "
               + str(relDir) + " (" + directions[relDir] + ")")
         print()
+        
+        # Robot feedback (sound)
+        sound = Sound()
+        str_en = "Turning to " + directions[relDir]
               
         # TO DO: IF NECESSARY, TURN TO FACE IN THE CORRECT DIRECTION
         resultant_direction = curDir - relDir
 
         if resultant_direction == 1 or resultant_direction == -7:
+            sound.speak(str_en)
             spin(45, MOTOR_SPEED, LEFT)
         if resultant_direction == -1 or resultant_direction == 7:
+            sound.speak(str_en)
             spin(45, MOTOR_SPEED, RIGHT)
         if resultant_direction == 2 or resultant_direction == -6:
+            sound.speak(str_en)
             spin(SPIN_ANG, MOTOR_SPEED, LEFT)
         if resultant_direction == 6 or resultant_direction == -2:
+            sound.speak(str_en)
             spin(SPIN_ANG, MOTOR_SPEED, RIGHT)
         if resultant_direction == 4 or resultant_direction == -4:
+            sound.speak(str_en)
             spin(180, MOTOR_SPEED, RIGHT)
-    
+            
+        # TO DO: MOVE ONE CELL FORWARD INTO THE NEXT POSITION
+        str_en = "Moving to " + str(path[i][0]) +" " + str(path[i][1])
+        sound.speak(str_en)
+        driveStraight(MOTOR_SPEED, TILE_DISTANCE)
          
         # Update the current position and orientation
         curPos = nextPos
@@ -101,6 +115,7 @@ def followPath(startPosition, startOrientation, path):
             print("straight")
             driveStraight(MOTOR_SPEED, TILE_DISTANCE)
     
+    sound.speak("I have arrived at my destination")
        
 
 

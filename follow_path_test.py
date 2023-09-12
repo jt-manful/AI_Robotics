@@ -3,6 +3,7 @@
 # imports
 from planning_map import *
 from ev3dev2.motor import MoveTank, OUTPUT_C, OUTPUT_B
+from ev3dev2.sound import Sound
 import time
 import math
 
@@ -12,8 +13,8 @@ tank = MoveTank(OUTPUT_B, OUTPUT_C)
 # global vars
 WHEEL_CIRCUMFRENCE = 19.5
 BASELINE = 14.6 
-SPIN_ANG = 90
-MOTOR_SPEED = 200
+SPIN_ANG = 87
+MOTOR_SPEED = 300
 LEFT = 'left'
 RIGHT = 'right'
 TILE_DISTANCE = 50.50
@@ -60,22 +61,33 @@ def followPath(startPosition, startOrientation, path):
               + ", whose direction relative to the current pos is "
               + str(relDir) + " (" + directions[relDir] + ")")
         print()
+        
+        # Robot feedback (sound)
+        sound = Sound()
+        str_en = "Turning to " + directions[relDir]
               
         # TO DO: IF NECESSARY, TURN TO FACE IN THE CORRECT DIRECTION
         resultant_direction = curDir - relDir
         if resultant_direction == 1 or resultant_direction == -3:
+            sound.speak(str_en)
             spin(SPIN_ANG, MOTOR_SPEED, LEFT)
         if resultant_direction == -1 or resultant_direction == 3:
+            sound.speak(str_en)
             spin(SPIN_ANG, MOTOR_SPEED, RIGHT)
         if resultant_direction == 2 or resultant_direction == -2:
+            sound.speak(str_en)
             spin(180, MOTOR_SPEED, RIGHT)
 
         # TO DO: MOVE ONE CELL FORWARD INTO THE NEXT POSITION
+        str_en = "Moving to " + str(path[i][0]) +" " + str(path[i][1])
+        sound.speak(str_en)
         driveStraight(MOTOR_SPEED, TILE_DISTANCE)
 
         # Update the current position and orientation
         curPos = nextPos
         curDir = relDir
+        
+    sound.speak("I have arrived at my destination")
 
 
 
@@ -122,5 +134,5 @@ if __name__ == "__main__":
     print_map(world_map)
     best_path = best_path(world_map, start)
     print("best path: ", best_path)
-    followPath(start, start_oreintation, best_path)
+    followPath(start, START_OREINTATION, best_path)
         
