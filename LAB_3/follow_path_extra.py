@@ -20,10 +20,7 @@ LEFT = 'left'
 RIGHT = 'right'
 TILE_DISTANCE = 50.50
 DIAGONAL_DISTANCE = 71.5
-
-
-
-start_oreintation = 0
+START_OREINTATION = 0
 
 
 # Names of cardinal directions corresponding to the integers 0, 1, 2, 3, 4, 5, 6, 7
@@ -166,6 +163,6 @@ if __name__ == "__main__":
     print_map(world_map)
     best_path = best_path(world_map, start)
     print("best path: ", best_path)
-    followPath(start, start_oreintation, best_path)
+    followPath(start, START_OREINTATION, best_path)
     # driveStraight(100, TILE_DISTANCE)
     # driveStraight(100,DIAGONAL_DISTANCE)
