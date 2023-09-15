@@ -1,12 +1,14 @@
 # Initialize map
-world_map = [[0, 0, 0, 0, 0],
-             [0, 0, 1, 1, 0],
-             [0, 0, 1, 0, 0], 
-             [0, 1, 0, 0, 0]]
+world_map = [[0, 0, 0, 0, 1, 0],
+           [0, 0, 0, 0, 0, 0],
+           [0, 1, 0, 0, 0, 0],
+           [0, 0, 0, 1, 0, 0],
+           [1, 1, 1, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0]]
 
-start = (2, 1)
-goal = (3, 4)
-
+start = (6, 0)
+goal = (3, 1)
 
 def neighboring_cells(curPos, world_map):
     '''The function  as a parameter: a tuple representing the current position,
@@ -50,6 +52,7 @@ def best_path(wavefront_map, startLoc):
                 
         path.append(next_cell)
         startLoc = next_cell
+    # path.append(goal)
     
     return path
 
