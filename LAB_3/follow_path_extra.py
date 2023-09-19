@@ -20,10 +20,7 @@ LEFT = 'left'
 RIGHT = 'right'
 TILE_DISTANCE = 50.50
 DIAGONAL_DISTANCE = 71.5
-
-
-
-start_oreintation = 0
+START_OREINTATION = 6
 
 
 # Names of cardinal directions corresponding to the integers 0, 1, 2, 3, 4, 5, 6, 7
@@ -101,7 +98,6 @@ def followPath(startPosition, startOrientation, path):
         # TO DO: MOVE ONE CELL FORWARD INTO THE NEXT POSITION
         str_en = "Moving to " + str(path[i][0]) +" " + str(path[i][1])
         sound.speak(str_en)
-        driveStraight(MOTOR_SPEED, TILE_DISTANCE)
          
         # Update the current position and orientation
         curPos = nextPos
@@ -159,13 +155,28 @@ def spin(angle_deg, motor_speed, direction):
 
 
 
-
+# Test the code
 if __name__ == "__main__":
-    # print(neighboring_cells((1,3), world_map1))
+    # map = [[0, 0, 0, 0, 0, 0],
+    #        [0, 0, 1, 0, 0, 0],
+    #        [0, 0, 0, 1, 0, 0],
+    #        [1, 1, 1, 0, 0, 0],
+    #        [0, 0, 0, 0, 0, 0],
+    #        [0, 0, 0, 0, 0, 0]]
+    # start1 = (6,0)
+    # goal1 = (3,1)
+    # world_map = wavefront_algorithm(world_map, goal)
+    # world_map2 = wa
+    # print_map(world_map)
+    # best_path = best_path(world_map, start)
+    # print("best path: ", best_path)
+    # followPath(start, START_OREINTATION, best_path)
+    
+    # Class test
+
     world_map = wavefront_algorithm(world_map, goal)
-    print_map(world_map)
     best_path = best_path(world_map, start)
-    print("best path: ", best_path)
-    followPath(start, start_oreintation, best_path)
-    # driveStraight(100, TILE_DISTANCE)
-    # driveStraight(100,DIAGONAL_DISTANCE)
+    followPath(start, START_OREINTATION, best_path)
+    print_map(world_map)
+    print(best_path)
+        

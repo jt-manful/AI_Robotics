@@ -18,7 +18,7 @@ MOTOR_SPEED = 300
 LEFT = 'left'
 RIGHT = 'right'
 TILE_DISTANCE = 50.50
-START_OREINTATION = 0
+START_OREINTATION = 3
 
 
 # Names of cardinal directions corresponding to the integers 0, 1, 2, and 3
@@ -130,9 +130,27 @@ def spin(angle_deg, motor_speed, direction):
          return -1
 # Test the code
 if __name__ == "__main__":
+    # map = [[0, 0, 0, 0, 0, 0],
+    #        [0, 0, 1, 0, 0, 0],
+    #        [0, 0, 0, 1, 0, 0],
+    #        [1, 1, 1, 0, 0, 0],
+    #        [0, 0, 0, 0, 0, 0],
+    #        [0, 0, 0, 0, 0, 0]]
+    # start1 = (6,0)
+    # goal1 = (3,1)
+    # world_map = wavefront_algorithm(world_map, goal)
+    # world_map2 = wa
+    # print_map(world_map)
+    # best_path = best_path(world_map, start)
+    # print("best path: ", best_path)
+    # followPath(start, START_OREINTATION, best_path)
+    
+    # Class test
+
+   
     world_map = wavefront_algorithm(world_map, goal)
-    print_map(world_map)
     best_path = best_path(world_map, start)
-    print("best path: ", best_path)
     followPath(start, START_OREINTATION, best_path)
+    print_map(world_map)
+    print(best_path)
         
