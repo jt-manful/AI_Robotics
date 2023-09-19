@@ -4,6 +4,7 @@
 from ev3dev2.motor import MoveTank, ColorSensor, OUTPUT_C, OUTPUT_B
 from ev3dev2.sound import Sound
 from ev3dev2.button import Button
+from ev3dev2.sensor.lego import UltrasonicSensor
 import time
 import math
 
@@ -18,6 +19,7 @@ RIGHT = 'right'
 TILE_DISTANCE = 50.50
 DIAGONAL_DISTANCE = 71.5
 OFFSET = 0
+TIME = 0.2
 
 
 # initailizations
@@ -25,9 +27,19 @@ tank = MoveTank(OUTPUT_B, OUTPUT_C)
 color_sensor = ColorSensor()
 button = Button()
 sound = Sound()
+sonar = UltrasonicSensor()
+
+
 white_val, black_val = 0
 threshold_val, input_val = 0
 calibration = True
+target_dist = 15
+integral = 0
+last_error = 0
+maxspeed_allowed = 700
+Kp = 0.1
+Kd = 0.1
+Ki = 0
 
 # calibration routine
 def calibration():
@@ -102,10 +114,24 @@ def line_following_routine(input_val, motor_speed):
         time.sleep(0.1)
 
 
+def pid():
+    while True:
+        cur_distance = sonar.distance_centimeters
+        cur_error = target_dist - cur_distance
+        integral = integral + cur_error
+        correction = (cur_error)*Kp + (integral)*Ki + (cur_error - last_error)*Kd
+        output = correction*(maxspeed_allowed)
+        tank.on_for_seconds(left_speed = output, right_speed = output, seconds=TIME)
+        last_error = cur_error
+
+
 if __name__ == "__main__":
     threshold_val = calibration()
-    while True:        
-        input_val = color_sensor.reflected_light_intensity
-        bang_motor_speed = abs(bang_bang_control(k_b_b= 20, input=input_val, threshold=threshold_val))
-        line_following_routine(bang_motor_speed)
+    # BANG BANG
+    # while True:        
+    #     input_val = color_sensor.reflected_light_intensity
+    #     bang_motor_speed = abs(bang_bang_control(k_b_b= 20, input=input_val, threshold=threshold_val))
+    #     line_following_routine(bang_motor_speed)
+
+    # PID - EXTRA
         
