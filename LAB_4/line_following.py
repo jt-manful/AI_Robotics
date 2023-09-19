@@ -17,6 +17,7 @@ LEFT = 'left'
 RIGHT = 'right'
 TILE_DISTANCE = 50.50
 DIAGONAL_DISTANCE = 71.5
+OFFSET = 0
 
 
 # initailizations
@@ -57,19 +58,7 @@ def calibration():
             str_en = "Calibration complete"
             sound.speak(str_en)
             calibration =  False
-
-
-# line following routine
-def line_following_routine():
-    while True:
-        input_val = color_sensor.reflected_light_intensity
-            
-        if input_val < threshold_val:
-            turn(TURN_ANG, MOTOR_SPEED, LEFT)
-        elif input_val > threshold_val:
-            turn(TURN_ANG, MOTOR_SPEED, RIGHT)
-
-        time.sleep(0.1)
+    return threshold_val
 
 # turning code
 def turn(angle, speed, direction):
@@ -89,5 +78,34 @@ def turn(angle, speed, direction):
 
 
 # bang-bang control
-def bang_bang_control():
-    pass
+# bang bang switches abruptly between two states
+# input: light sensor reading
+# sensor light sensor 
+# output: motor speed ??
+# error: is desired - actual
+# controller: ev3
+def bang_bang_control(k_b_b, input, threshold):
+    motor_speed = 0
+    error = threshold - input
+    motor_speed = k_b_b * (error) + OFFSET
+    return motor_speed
+
+
+# line following routine based on bang bang
+def line_following_routine(input_val, motor_speed):
+    while True:
+        if input_val < threshold_val:
+            turn(TURN_ANG, motor_speed, LEFT)
+        elif input_val > threshold_val:
+            turn(TURN_ANG, motor_speed, RIGHT)
+
+        time.sleep(0.1)
+
+
+if __name__ == "__main__":
+    threshold_val = calibration()
+    while True:        
+        input_val = color_sensor.reflected_light_intensity
+        bang_motor_speed = abs(bang_bang_control(k_b_b= 20, input=input_val, threshold=threshold_val))
+        line_following_routine(bang_motor_speed)
+        
