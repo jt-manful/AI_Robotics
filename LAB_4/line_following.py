@@ -11,7 +11,7 @@ import math
 # global vars
 WHEEL_CIRCUMFRENCE = 19.5
 BASELINE = 14.6 
-SPIN_ANG = 90
+TURN_ANG = 90
 MOTOR_SPEED = 200
 LEFT = 'left'
 RIGHT = 'right'
@@ -63,16 +63,15 @@ def calibration():
 def line_following_routine():
     while True:
         input_val = color_sensor.reflected_light_intensity
-        
+            
         if input_val < threshold_val:
-            pass
+            turn(TURN_ANG, MOTOR_SPEED, LEFT)
         elif input_val > threshold_val:
-            pass
+            turn(TURN_ANG, MOTOR_SPEED, RIGHT)
 
         time.sleep(0.1)
 
-
-
+# turning code
 def turn(angle, speed, direction):
     '''function takes an angle, a motor speed and a direction and 
         causes the bot to spin either left or right a given angle for a given speed.'''
@@ -87,3 +86,8 @@ def turn(angle, speed, direction):
         tank.on_for_degrees(left_speed=0, right_speed=motor_speed, degrees=angle*multiplier)
     elif direction == 'right':
         tank.on_for_degrees(left_speed=motor_speed, right_speed=0, degrees=angle*multiplier)
+
+
+# bang-bang control
+def bang_bang_control():
+    pass
