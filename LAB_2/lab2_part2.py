@@ -36,6 +36,23 @@ def driveStraight(speed, distance):
     tank.on_for_rotations(motor_speed, motor_speed, rotation)
     
 
+
+def turn(angle, speed, direction):
+    '''function takes an angle, a motor speed and a direction and 
+        causes the bot to spin either left or right a given angle for a given speed.'''
+   
+    multiplier = (2*math.pi*BASELINE)/(WHEEL_CIRCUMFRENCE)
+    motor_speed = (speed/1000)*100
+    
+    if not (0 <= motor_speed and motor_speed <= 1000):
+        return -1
+        
+    if direction == 'left':
+        tank.on_for_degrees(left_speed=0, right_speed=motor_speed, degrees=angle*multiplier)
+    elif direction == 'right':
+        tank.on_for_degrees(left_speed=motor_speed, right_speed=0, degrees=angle*multiplier)
+
+
 def spin(angle_deg, motor_speed, direction):
     '''function takes an angle, a motor speed and a direction and 
         causes the bot to spin either left or right a given angle for a given speed.'''
