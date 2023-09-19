@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
 # imports
-from ev3dev2.motor import MoveTank, ColorSensor, OUTPUT_C, OUTPUT_B
+from ev3dev2.motor import MoveTank, OUTPUT_C, OUTPUT_B
 from ev3dev2.sound import Sound
 from ev3dev2.button import Button
+from ev3dev2.sensor.lego import  ColorSensor
 from ev3dev2.sensor.lego import UltrasonicSensor
 import time
 import math
@@ -27,12 +28,12 @@ tank = MoveTank(OUTPUT_B, OUTPUT_C)
 color_sensor = ColorSensor()
 button = Button()
 sound = Sound()
-sonar = UltrasonicSensor()
+#sonar = UltrasonicSensor()
 
 
-white_val, black_val = 0
-threshold_val, input_val = 0
-calibration = True
+
+threshold_val=0
+input_val = 0
 target_dist = 15
 integral = 0
 last_error = 0
@@ -43,33 +44,38 @@ Ki = 0
 
 # calibration routine
 def calibration():
+    calibration = True
     while calibration:
-        str_en = "Calibration starting!!"
+        str_en = "Calibration starting"
         sound.speak(str_en)
 
         str_en = "Place the robot on a white surface and press enter button to record the value "
         sound.speak(str_en)
 
-        if button.enter:
+        while not button.enter:
             white_val = color_sensor.reflected_light_intensity
+           
             time.sleep(0.1) # sleep for 5 seconds after recording value
 
-        str_en = "Place the robot on a white surface and press enter button to record the value "
+        print("white val", white_val)
+        str_en = "Place the robot on a black surface and press enter button to record the value "
         sound.speak(str_en)
 
-        if button.enter:
+        while not button.enter:
             black_val = color_sensor.reflected_light_intensity
             time.sleep(0.1) # sleep for 5 seconds after recording value
 
-        threshold_val = math.avg(white_val, black_val)
+        print("black val", black_val)
+        threshold_val = int((white_val + black_val)/2)
         print("threshold value", threshold_val)
 
         str_en = "Press enter to confirm calibration complete "
         sound.speak(str_en)
-        if button.enter:
-            str_en = "Calibration complete"
-            sound.speak(str_en)
-            calibration =  False
+        while not button.enter:
+            pass
+        str_en = "Calibration complete"
+        sound.speak(str_en)
+        calibration =  False
     return threshold_val
 
 # turning code
@@ -110,7 +116,6 @@ def line_following_routine(input_val, motor_speed):
             turn(TURN_ANG, motor_speed, LEFT)
         elif input_val > threshold_val:
             turn(TURN_ANG, motor_speed, RIGHT)
-
         time.sleep(0.1)
 
 
