@@ -9,11 +9,10 @@ from ev3dev2.sensor.lego import UltrasonicSensor
 import time
 import math
 
-
 # global vars
 WHEEL_CIRCUMFRENCE = 19.5
 BASELINE = 14.6 
-TURN_ANG = 10
+TURN_ANG = 5
 MOTOR_SPEED = 200
 LEFT = 'left'
 RIGHT = 'right'
@@ -26,7 +25,6 @@ tank = MoveTank(OUTPUT_B, OUTPUT_C)
 button = Button()
 sound = Sound()
 sonar = UltrasonicSensor()
-threshold_val= 0 # light sensor
 
 
 
@@ -92,15 +90,20 @@ def turn(angle, speed, direction):
 # controller: ev3
 def bang_bang_control(k_b_b, input, threshold, offset):
     motor_speed = 0
-    error = threshold - input
-    motor_speed = k_b_b * (error) + offset
+    error = input - threshold 
+    if error < 0:
+        sign_error = -1
+    else:
+        sign_error = 1
+    motor_speed = k_b_b * (sign_error) + offset
     return motor_speed
 
 
 # line following routine based on bang bang
-def line_following_routine(motor_speed):
+def line_following_routine():
     while True:
         input_val = color_sensor.reflected_light_intensity
+        motor_speed = abs(bang_bang_control(k_b_b= 8, input=input_val, threshold=threshold_val,offset=0))
         print("Sensor input", input_val)
         if input_val < threshold_val:
             print("turing ", LEFT)
@@ -109,27 +112,51 @@ def line_following_routine(motor_speed):
             print("input: ", input_val, " ", "threshold: ", threshold_val)
             print("turing ", RIGHT)
             turn(TURN_ANG, motor_speed, RIGHT)
-        time.sleep(0.1)
+
+def bang_control_detection(k_b_b, threshold_val, offset):
+    while True:
+        cur_distance = sonar.distance_centimeters
+        output = bang_bang_control(k_b_b= k_b_b, input=cur_distance, threshold=threshold_val, offset=offset)
+        if output >= 100:
+            output = 100 
+        elif output <= -100:
+            output = -100
+        print("motor speed: ", output)
+        tank.on(left_speed = output, right_speed = output)
 
 # line following routine based on P-control
 def p_control(Kp, target_dist, offset):
    while True:
         cur_distance = sonar.distance_centimeters
         print("Distance from object: ", cur_distance)
-        cur_error = target_dist - cur_distance
+        cur_error = cur_distance - target_dist
         output = cur_error*Kp + offset
+        print("error: ", cur_error)
+        if output >= 100:
+            output = 100 
+        elif output <= -100:
+            output = -100
+        print("motor speed: ", output)
         tank.on(left_speed = output, right_speed = output)
+        time.sleep(0.1)
 
 
 def pd_control(Kp, Kd, target_dist, offset):
+    last_error = 0
     while True:
         cur_distance = sonar.distance_centimeters
         print("Distance from object: ", cur_distance)        
-        cur_error = target_dist - cur_distance
-        integral = integral + cur_error
+        cur_error = cur_distance - target_dist
         correction = (cur_error)*Kp + (cur_error - last_error)*Kd + offset
         output = correction
+        print("error: ", cur_error)
+        if output >= 100:
+            output = 100 
+        elif output <= -100:
+            output = -100
+        print("motor speed: ", output)
         tank.on(left_speed = output, right_speed = output)
+        time.sleep(0.1)
         last_error = cur_error
 
 # EXTRA
@@ -141,18 +168,26 @@ def pid_control(Kp, Ki, Kd, target_dist, offset):
         integral = integral + cur_error
         correction = (cur_error)*Kp + (integral)*Ki + (cur_error - last_error)*Kd + offset
         output = correction
+        print("error: ", cur_error) 
+        print("motor speed: ", output)
         tank.on(left_speed = output, right_speed = output)
+        time.sleep(0.1)
         last_error = cur_error
 
 
 if __name__ == "__main__":
+    
     # threshold_val = calibration()
     # BANG BANG
-    # while True:        
-    #     threshold_val = 58
-    #     bang_motor_speed = abs(bang_bang_control(k_b_b= 5, input=input_val, threshold=threshold_val))
-    #     line_following_routine(bang_motor_speed)
+    # threshold_val = 56    
+    # line_following_routine()
+    # bang_control_detection(k_b_b=8, threshold_val=15, offset=0)
 
-    # PID - EXTRA
-    p_control()
-        
+    # P CONTROL
+    # p_control(Kp=2.5, target_dist=15, offset=0)
+    
+    # PD CONTROL
+    pd_control(Kp=2.25, Kd=1, target_dist=15, offset=0)
+
+    # PID  CONTROL
+    # pid_control(Kd=0,Ki=0,Kd=0,target_dist=0,offset=0)
