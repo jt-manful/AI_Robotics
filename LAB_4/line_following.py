@@ -118,6 +118,13 @@ def line_following_routine(input_val, motor_speed):
             turn(TURN_ANG, motor_speed, RIGHT)
         time.sleep(0.1)
 
+# line following routine based on P-control
+def p_control():
+    cur_distance = sonar.distance_centimeters
+    cur_error = target_dist - cur_distance
+    output = cur_error*Kp
+    tank.on_for_seconds(left_speed = output, right_speed = output, seconds=TIME)
+
 
 def pid():
     while True:
