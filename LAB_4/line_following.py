@@ -17,30 +17,18 @@ TURN_ANG = 10
 MOTOR_SPEED = 200
 LEFT = 'left'
 RIGHT = 'right'
-TILE_DISTANCE = 50.50
-DIAGONAL_DISTANCE = 71.5
-OFFSET = 0
-TIME = 0.2
+
 
 
 # initailizations
 tank = MoveTank(OUTPUT_B, OUTPUT_C)
-color_sensor = ColorSensor()
+#color_sensor = ColorSensor()
 button = Button()
 sound = Sound()
 sonar = UltrasonicSensor()
+threshold_val= 0 # light sensor
 
 
-
-threshold_val=0
-input_val = 0
-target_dist = 15
-integral = 0
-last_error = 0
-maxspeed_allowed = 700
-Kp = 0.1
-Kd = 0.1
-Ki = 0
 
 # calibration routine
 def calibration():
@@ -102,10 +90,10 @@ def turn(angle, speed, direction):
 # output: motor speed ??
 # error: is desired - actual
 # controller: ev3
-def bang_bang_control(k_b_b, input, threshold):
+def bang_bang_control(k_b_b, input, threshold, offset):
     motor_speed = 0
     error = threshold - input
-    motor_speed = k_b_b * (error) + OFFSET
+    motor_speed = k_b_b * (error) + offset
     return motor_speed
 
 
@@ -124,21 +112,36 @@ def line_following_routine(motor_speed):
         time.sleep(0.1)
 
 # line following routine based on P-control
-def p_control():
-    cur_distance = sonar.distance_centimeters
-    cur_error = target_dist - cur_distance
-    output = cur_error*Kp
-    tank.on_for_seconds(left_speed = output, right_speed = output, seconds=TIME)
+def p_control(Kp, target_dist, offset):
+   while True:
+        cur_distance = sonar.distance_centimeters
+        print("Distance from object: ", cur_distance)
+        cur_error = target_dist - cur_distance
+        output = cur_error*Kp + offset
+        tank.on(left_speed = output, right_speed = output)
 
 
-def pid():
+def pd_control(Kp, Kd, target_dist, offset):
     while True:
         cur_distance = sonar.distance_centimeters
+        print("Distance from object: ", cur_distance)        
         cur_error = target_dist - cur_distance
         integral = integral + cur_error
-        correction = (cur_error)*Kp + (integral)*Ki + (cur_error - last_error)*Kd
-        output = correction*(maxspeed_allowed)
-        tank.on_for_seconds(left_speed = output, right_speed = output, seconds=TIME)
+        correction = (cur_error)*Kp + (cur_error - last_error)*Kd + offset
+        output = correction
+        tank.on(left_speed = output, right_speed = output)
+        last_error = cur_error
+
+# EXTRA
+def pid_control(Kp, Ki, Kd, target_dist, offset):
+    while True:
+        cur_distance = sonar.distance_centimeters
+        print("Distance from object: ", cur_distance)
+        cur_error = target_dist - cur_distance
+        integral = integral + cur_error
+        correction = (cur_error)*Kp + (integral)*Ki + (cur_error - last_error)*Kd + offset
+        output = correction
+        tank.on(left_speed = output, right_speed = output)
         last_error = cur_error
 
 
@@ -151,5 +154,5 @@ if __name__ == "__main__":
     #     line_following_routine(bang_motor_speed)
 
     # PID - EXTRA
-    pid()
+    p_control()
         
