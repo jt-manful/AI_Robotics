@@ -13,7 +13,7 @@ import math
 # global vars
 WHEEL_CIRCUMFRENCE = 19.5
 BASELINE = 14.6 
-TURN_ANG = 90
+TURN_ANG = 10
 MOTOR_SPEED = 200
 LEFT = 'left'
 RIGHT = 'right'
@@ -28,7 +28,7 @@ tank = MoveTank(OUTPUT_B, OUTPUT_C)
 color_sensor = ColorSensor()
 button = Button()
 sound = Sound()
-#sonar = UltrasonicSensor()
+sonar = UltrasonicSensor()
 
 
 
@@ -110,11 +110,16 @@ def bang_bang_control(k_b_b, input, threshold):
 
 
 # line following routine based on bang bang
-def line_following_routine(input_val, motor_speed):
+def line_following_routine(motor_speed):
     while True:
+        input_val = color_sensor.reflected_light_intensity
+        print("Sensor input", input_val)
         if input_val < threshold_val:
+            print("turing ", LEFT)
             turn(TURN_ANG, motor_speed, LEFT)
         elif input_val > threshold_val:
+            print("input: ", input_val, " ", "threshold: ", threshold_val)
+            print("turing ", RIGHT)
             turn(TURN_ANG, motor_speed, RIGHT)
         time.sleep(0.1)
 
@@ -138,12 +143,13 @@ def pid():
 
 
 if __name__ == "__main__":
-    threshold_val = calibration()
+    # threshold_val = calibration()
     # BANG BANG
     # while True:        
-    #     input_val = color_sensor.reflected_light_intensity
-    #     bang_motor_speed = abs(bang_bang_control(k_b_b= 20, input=input_val, threshold=threshold_val))
+    #     threshold_val = 58
+    #     bang_motor_speed = abs(bang_bang_control(k_b_b= 5, input=input_val, threshold=threshold_val))
     #     line_following_routine(bang_motor_speed)
 
     # PID - EXTRA
+    pid()
         
