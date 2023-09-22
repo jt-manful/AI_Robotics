@@ -13,7 +13,7 @@ import math
 WHEEL_CIRCUMFRENCE = 19.5
 BASELINE = 14.6 
 TURN_ANG = 5
-MOTOR_SPEED = 200
+MOTOR_SPEED = 100
 LEFT = 'left'
 RIGHT = 'right'
 
@@ -21,7 +21,7 @@ RIGHT = 'right'
 
 # initailizations
 tank = MoveTank(OUTPUT_B, OUTPUT_C)
-#color_sensor = ColorSensor()
+color_sensor = ColorSensor()
 button = Button()
 sound = Sound()
 sonar = UltrasonicSensor()
@@ -99,19 +99,18 @@ def bang_bang_control(k_b_b, input, threshold, offset):
     return motor_speed
 
 
-# line following routine based on bang bang
-def line_following_routine():
+def line_following_routine(threshold_val, sleep, MOTOR_SPEED):
     while True:
         input_val = color_sensor.reflected_light_intensity
-        motor_speed = abs(bang_bang_control(k_b_b= 8, input=input_val, threshold=threshold_val,offset=0))
-        print("Sensor input", input_val)
+        # print("Sensor input", input_val)
         if input_val < threshold_val:
-            print("turing ", LEFT)
-            turn(TURN_ANG, motor_speed, LEFT)
+            # print("turing ", LEFT)
+            turn(TURN_ANG, MOTOR_SPEED, LEFT)
         elif input_val > threshold_val:
-            print("input: ", input_val, " ", "threshold: ", threshold_val)
-            print("turing ", RIGHT)
-            turn(TURN_ANG, motor_speed, RIGHT)
+            # print("input: ", input_val, " ", "threshold: ", threshold_val)
+            # print("turing ", RIGHT)
+            turn(TURN_ANG, MOTOR_SPEED, RIGHT)
+        time.sleep(sleep)
 
 def bang_control_detection(k_b_b, threshold_val, offset):
     while True:
@@ -121,14 +120,14 @@ def bang_control_detection(k_b_b, threshold_val, offset):
             output = 100 
         elif output <= -100:
             output = -100
-        print("motor speed: ", output)
+        # print("motor speed: ", output)
         tank.on(left_speed = output, right_speed = output)
 
-# line following routine based on P-control
+
 def p_control(Kp, target_dist, offset):
    while True:
         cur_distance = sonar.distance_centimeters
-        print("Distance from object: ", cur_distance)
+        # print("Distance from object: ", cur_distance)
         cur_error = cur_distance - target_dist
         output = cur_error*Kp + offset
         print("error: ", cur_error)
@@ -136,7 +135,7 @@ def p_control(Kp, target_dist, offset):
             output = 100 
         elif output <= -100:
             output = -100
-        print("motor speed: ", output)
+        # print("motor speed: ", output)
         tank.on(left_speed = output, right_speed = output)
         time.sleep(0.1)
 
@@ -145,29 +144,35 @@ def pd_control(Kp, Kd, target_dist, offset):
     last_error = 0
     while True:
         cur_distance = sonar.distance_centimeters
-        print("Distance from object: ", cur_distance)        
+        # print("Distance from object: ", cur_distance)        
         cur_error = cur_distance - target_dist
         correction = (cur_error)*Kp + (cur_error - last_error)*Kd + offset
         output = correction
-        print("error: ", cur_error)
+        # print("error: ", cur_error)
         if output >= 100:
             output = 100 
         elif output <= -100:
             output = -100
-        print("motor speed: ", output)
+        # print("motor speed: ", output)
         tank.on(left_speed = output, right_speed = output)
         time.sleep(0.1)
         last_error = cur_error
 
 # EXTRA
 def pid_control(Kp, Ki, Kd, target_dist, offset):
+    integral=0
+    last_error = 0
     while True:
         cur_distance = sonar.distance_centimeters
-        print("Distance from object: ", cur_distance)
-        cur_error = target_dist - cur_distance
+        # print("Distance from object: ", cur_distance)
+        cur_error = cur_distance - target_dist
         integral = integral + cur_error
         correction = (cur_error)*Kp + (integral)*Ki + (cur_error - last_error)*Kd + offset
         output = correction
+        if output >= 100:
+            output = 100 
+        elif output <= -100:
+            output = -100
         print("error: ", cur_error) 
         print("motor speed: ", output)
         tank.on(left_speed = output, right_speed = output)
@@ -177,17 +182,18 @@ def pid_control(Kp, Ki, Kd, target_dist, offset):
 
 if __name__ == "__main__":
     
+    # LINE FOLLOWING
     # threshold_val = calibration()
-    # BANG BANG
-    # threshold_val = 56    
-    # line_following_routine()
+    # line_following_routine(threshold_val,1,500)
+
+    # BANG- BANG CONTRO;
     # bang_control_detection(k_b_b=8, threshold_val=15, offset=0)
 
     # P CONTROL
-    # p_control(Kp=2.5, target_dist=15, offset=0)
+    #  p_control(Kp=2.5, target_dist=15, offset=0)
     
     # PD CONTROL
-    pd_control(Kp=2.25, Kd=1, target_dist=15, offset=0)
+    # pd_control(Kp=2.25, Kd=1, target_dist=15, offset=0)
 
     # PID  CONTROL
-    # pid_control(Kd=0,Ki=0,Kd=0,target_dist=0,offset=0)
+    # pid_control(Kp=3, Kd=1,Ki=0.1,target_dist=15,offset=0)
